@@ -199,13 +199,10 @@ void Board::checkPossibleMoves(int _col, int _row)
 	for (auto _it = possibleMoves.begin(); _it != possibleMoves.end(); ++_it)
 	{
 		_move = *_it;
-		//Nusret this line move to above 
-		//sf::Vector2i  _move = *_it;
-		//
+
 		if (_move.x == _col && _move.y == _row)
 		{
-			//NUSRET
-			//must be removed. it is check pos
+
 			if (board[_col][_row] && board[_col][_row]->getPiece() == 'K')
 			{
 				init();
@@ -223,17 +220,13 @@ void Board::checkPossibleMoves(int _col, int _row)
 			else
 				board[selectedPiece->getCol()][selectedPiece->getRow()] = NULL;
 
-			//delete board[_col][_row];
-
 
 			selectedPiece->moveTo(_col, _row);
 
 			cSoundType = board[_col][_row] ? sound.PIECE_KILL : sound.PIECE_MOVE;
 
 			board[_col][_row] = selectedPiece;
-			//NUSRET
-			// 
-			// sound must be here
+
 			possibleMoves = selectedPiece->getPossibleMoves(board);
 
 			if (IsCheckState(selectedPiece, possibleMoves, curPlayer))
@@ -263,15 +256,20 @@ void Board::checkPossibleMoves(int _col, int _row)
 void Board::CheckHeroPawnAndMakeQueen()
 {
 	
-	if (selectedPiece->getPiece() == 'p' && selectedPiece->getRow() == 3)
+	if (selectedPiece->getPiece() == 'p')
 	{
-		board[selectedPiece->getCol()][selectedPiece->getRow()] = new Queen(100, selectedPiece->getCol(), selectedPiece->getRow(), 'b');
-		//new Queen(
+		if (selectedPiece->getColour() == 'w' && selectedPiece->getRow() == 0)
+			board[selectedPiece->getCol()][selectedPiece->getRow()] = new Queen(TILE_SIZE, selectedPiece->getCol(), selectedPiece->getRow(), 'w');
+
+		else if (selectedPiece->getColour() == 'b' && selectedPiece->getRow() == 7)
+			board[selectedPiece->getCol()][selectedPiece->getRow()] = new Queen(TILE_SIZE, selectedPiece->getCol(), selectedPiece->getRow(), 'b');
+
+
 	}
 }
 
 
-// is current player's piece allow playing 
+// is current player's piece allow playing ?
 void Board::ControlAnyCheckPosition()
 {
 	sf::Vector2i possiblemove;
@@ -291,7 +289,6 @@ void Board::ControlAnyCheckPosition()
 	{
 		possiblemove = *_iter;
 		
-		//selectedPiece->moveTo(possiblemove.x, possiblemove.y);
 		temppiece = board[possiblemove.x][possiblemove.y];
 		board[possiblemove.x][possiblemove.y] = selectedPiece;
 		board[_orjcol][_orjrow] = NULL;
@@ -315,23 +312,17 @@ void Board::ControlAnyCheckPosition()
 
 		}
 
-		// turn back
-		//selectedPiece->moveTo(_orjcol, _orjrow);
-
 		board[_orjcol][_orjrow] = selectedPiece;
 		board[possiblemove.x][possiblemove.y] = temppiece;
 
-		//if (possibleMoves.size() == 0) // exception handling
-			//break;
-		//else 
-		if (!eraseflag)_iter++;
+		if (!eraseflag)_iter++; // Erase function is increase iterator
 
 	}
 	isCheck = false;
-//	selectedPiece->moveTo(_orjcol,_orjrow);
-//	board[_orjcol][_orjrow] = selectedPiece;
+
 }
-// get the playing piece move type: cross or flat
+
+// Get the playing piece move type: cross or flat
 char Board::GetChecktype()
 {
 	char movementType = killerPiece->getMovementtype();
