@@ -31,7 +31,7 @@ std::vector<sf::Vector2i> King::getPossibleMoves(Array2D<Piece*>& _board)
 		}
 	}
 
-	if (move == 0)
+	if (move == 0 && !getCheck())
 	{
 		Piece* _piece;
 
@@ -41,18 +41,48 @@ std::vector<sf::Vector2i> King::getPossibleMoves(Array2D<Piece*>& _board)
 			for (int _col = 1; _col < col; ++_col)
 				if (!_piece) _piece = _board[_col][row];
 
-			if (!_piece) _moves.push_back(sf::Vector2i(0, row));
+			if (!_piece && !CheckRookUnderThreat(_board, 3, row)) _moves.push_back(sf::Vector2i(2, row));
 		}
 
-		if (_board[_board.getCols() - 1][row] && _board[_board.getCols() - 1][row]->getMove() == 0)
+		if (_board[_board.getCols() - 1][row] && _board[_board.getCols() - 1][row]->getMove() == 0 )
 		{
 			_piece = NULL;
 			for (int _col = col + 1; _col < _board.getCols() - 1; ++_col)
 				if (!_piece) _piece = _board[_col][row];
 
-			if (!_piece) _moves.push_back(sf::Vector2i(_board.getCols() - 1, row));
+			if (!_piece && !CheckRookUnderThreat(_board, _board.getCols() - 3, row)) _moves.push_back(sf::Vector2i(_board.getCols() - 2, row));
 		}
 	}
 
 	return _moves;
+}
+
+bool King::CheckRookUnderThreat(Array2D<Piece*>& _board,  const char rookcol, const char rookrow)
+{
+	sf::Vector2i possiblemove;
+	std::vector<sf::Vector2i> posMoves;
+
+	char oppositePlayer =  _board[4][rookrow]->getColour() == 'w' ? 'b' : 'w';
+
+	for (char _row = 0; (_row < 8); ++_row)
+	{
+		for (char _col = 0; _col < 8; ++_col)
+		{
+			if (_board[_col][_row] && _board[_col][_row]->getPiece() != 'K' && _board[_col][_row]->getColour() == oppositePlayer)
+			{
+				posMoves = _board[_col][_row]->getPossibleMoves(_board);
+
+				for (auto _it = posMoves.begin(); _it != posMoves.end(); ++_it)
+				{
+					possiblemove = *_it;
+
+					if (possiblemove.x == rookcol && possiblemove.y == rookrow)
+						{
+							return true;
+						}
+				}
+			}
+		}
+	}
+	return false;
 }

@@ -98,3 +98,24 @@ int Piece::getMove()
 {
 	return move;
 }
+
+bool Piece::getCheck()
+{
+	return isCheck;
+}
+
+void Piece::setCheck(bool Check)
+{
+	isCheck = Check;
+}
+
+bool Piece::getenPassant()
+{
+	return enPassant;
+}
+
+void Piece::setenPassant(bool enPass)
+{
+	enPassant = enPass;
+}
+

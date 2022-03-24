@@ -31,6 +31,15 @@ std::vector<sf::Vector2i> Pawn::getPossibleMoves(Array2D<Piece*>& _board)
 			_moves.push_back(sf::Vector2i(col - 1, row + dir));
 		if (col + 1 < _board.getCols() && _board[col + 1][row + dir] && _board[col + 1][row + dir]->getColour() != getColour())
 			_moves.push_back(sf::Vector2i(col + 1, row + dir));
+
+
+		if (col - 1 >= 0 && _board[col - 1][row]  && _board[col - 1][row]->getenPassant() )
+			_moves.push_back(sf::Vector2i(col - 1, row + dir));
+
+		if (col + 1 < _board.getCols() && _board[col + 1][row] && _board[col + 1][row]->getenPassant() )
+			_moves.push_back(sf::Vector2i(col + 1, row + dir));
+
+
 	}
 
 	return _moves;

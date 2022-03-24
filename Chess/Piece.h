@@ -33,15 +33,22 @@ public:
 	void setRow(int iRow);
 	void setCol(int iCol);
 	char getMovementtype();
+	bool getCheck();
+	void setCheck(bool Check);
+	bool getenPassant();
+	void setenPassant(bool enPass);
 
 protected:
 	int row, col, size;
 	int move;
 
+
 private:
 	char colour;
 	char piece;
 	char movementtype;// 0 : L 1 : cross 2: flat 3:both 
+	bool isCheck;
+	bool enPassant = false;
 
 	std::string file;
 	sf::RectangleShape rect;

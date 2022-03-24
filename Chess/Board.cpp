@@ -121,18 +121,19 @@ void Board::mouseClicked(sf::Vector2i _position)
 	if (_col >= COLS) return;
 
 	// NUSRET 
-	// Not focused when clicked the antoher piece of he current player
-	//
+	// 
+	// was not focusing when the current player clicked
+
 	if (possibleMoves.size() != 0 )
 		checkPossibleMoves(_col, _row);
 	//
-
-
 	if (board[_col][_row]  /* && possibleMoves.size() == 0*/)
 	{
 		if (!takeTurns || board[_col][_row]->getColour() == curPlayer)
 		{
 			selectedPiece = board[_col][_row];
+
+			selectedPiece->setCheck(isCheck);
 
 			if (isCheck)
 			{
@@ -141,6 +142,7 @@ void Board::mouseClicked(sf::Vector2i _position)
 				if (selectedPiece->getPiece() == 'K')
 				{
 					sf::Vector2i possiblemove;
+
 
 					possibleMoves = selectedPiece->getPossibleMoves(board);
 
@@ -209,17 +211,9 @@ void Board::checkPossibleMoves(int _col, int _row)
 				break;
 			}
 			//
-
-
-			if (board[_col][_row] && board[_col][_row]->getColour() == selectedPiece->getColour())
-			{
-				Piece* _piece = board[_col][_row];
-				board[selectedPiece->getCol()][selectedPiece->getRow()] = _piece;
-				_piece->moveTo(selectedPiece->getCol(), selectedPiece->getRow());
-			}
-			else
-				board[selectedPiece->getCol()][selectedPiece->getRow()] = NULL;
-
+			ControlCastling(_col, _row);
+			
+			ControlEnPassant(_col, _row);
 
 			selectedPiece->moveTo(_col, _row);
 
@@ -243,7 +237,7 @@ void Board::checkPossibleMoves(int _col, int _row)
 
 			curPlayer = curPlayer == PLAYER_ONE ? PLAYER_TWO : PLAYER_ONE;
 
-			printf("moved row : %d moved col : %d\n", _move.y, _move.x);
+			//printf("moved row : %d moved col : %d\n", _move.y, _move.x);
 
 			break;
 		}
@@ -251,6 +245,67 @@ void Board::checkPossibleMoves(int _col, int _row)
 
 	selectedPiece = NULL;
 	possibleMoves.clear();
+}
+
+void Board::ControlEnPassant(const int& _col, const int& _row)
+{
+	char oppositePlayer = curPlayer == PLAYER_ONE ? PLAYER_TWO : PLAYER_ONE;
+
+	if (selectedPiece->getPiece() == 'p')
+	{ 
+		if (abs(selectedPiece->getRow() - _row) > 1)
+			selectedPiece->setenPassant(true);
+
+		else if ((abs(selectedPiece->getRow() - _row) == 1 && abs(selectedPiece->getCol() - _col) == 1))
+		{
+			if (board[_col][_row - 1] && board[_col][_row - 1]->getenPassant())
+				board[_col][_row - 1] = NULL;
+			if (board[_col][_row + 1] && board[_col][_row + 1]->getenPassant())
+				board[_col][_row + 1] = NULL;
+
+		}
+	}
+
+	for (char crow = 0; crow < ROWS; ++crow)
+	{
+		for (char ccol = 0; ccol < COLS; ++ccol)
+		{
+			if (board[ccol][crow] && board[ccol][crow]->getColour() == oppositePlayer && board[ccol][crow]->getPiece() == 'p')
+				board[ccol][crow]->setenPassant(false);
+		}
+	}
+
+}
+
+void Board::ControlCastling(const int &_col,const int &_row)
+{
+	char rookcol = 0;
+	Piece* _piece;
+
+	if (selectedPiece->getPiece() == 'K' && selectedPiece->getMove() == 0)
+	{
+		if (_col == 6) // short castling
+		{
+			rookcol = 5;
+			_piece = board[7][_row];
+			board[rookcol][selectedPiece->getRow()] = _piece;
+			_piece->moveTo(rookcol, selectedPiece->getRow());
+			board[7][selectedPiece->getRow()] = NULL;
+		}
+		else if (_col == 2)// long castling
+		{
+			rookcol = 3;
+			_piece = board[0][_row];
+			board[rookcol][selectedPiece->getRow()] = _piece;
+			_piece->moveTo(rookcol, selectedPiece->getRow());
+			board[0][selectedPiece->getRow()] = NULL;
+
+		}
+			board[4][selectedPiece->getRow()] = NULL;
+	}
+	
+	board[selectedPiece->getCol()][selectedPiece->getRow()] = NULL;
+
 }
 
 void Board::CheckHeroPawnAndMakeQueen()
@@ -269,7 +324,7 @@ void Board::CheckHeroPawnAndMakeQueen()
 }
 
 
-// is current player's piece allow playing ?
+// is current player's piece able to move ?
 void Board::ControlAnyCheckPosition()
 {
 	sf::Vector2i possiblemove;
@@ -394,8 +449,6 @@ void Board::SavePotentiallyCheckPosition()
 bool Board::IsCheckState(Piece* Piece, std::vector<sf::Vector2i> posMoves,char playercolour)
 {
 	isCheck = false;
-	//if (!isCheck)
-	//{
 		sf::Vector2i possiblemove;
 		//
 		//the last position of the last selected piece 
@@ -413,7 +466,6 @@ bool Board::IsCheckState(Piece* Piece, std::vector<sf::Vector2i> posMoves,char p
 					break;
 				}
 		}
-	//}
 	
 	return isCheck;
 }
@@ -434,15 +486,13 @@ void Board::GetPossibleBlockCheck()
 
 			if (board[selectedPiece->getCol()][selectedPiece->getRow()])
 			{
-				if (/*board[selectedPiece->getCol()][selectedPiece->getRow()]->getColour() != curPlayer
-					&& */(board[possiblemove.x][possiblemove.y] == killerPiece 
+				if ((board[possiblemove.x][possiblemove.y] == killerPiece 
 						|| (std::find(PotentiallyCheckMoves.begin(), PotentiallyCheckMoves.end(), possiblemove) != PotentiallyCheckMoves.end())
 						)
 					)
 				{
 					PossibleMovesForBlockCheck.push_back(possiblemove);
 					isPossibleBlockCheck = true;
-					//break;
 				}
 			}
 		}

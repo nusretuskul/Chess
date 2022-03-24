@@ -30,25 +30,9 @@ CSound::~CSound()
 bool CSound::Play_Sound(char cSoundType)
 {
 
-	//./assets/Sounds/
-
-		//TCHAR path[MAX_PATH + 1] = L"";
-		//DWORD len = GetCurrentDirectory(MAX_PATH, path);
-		//printf(" directory is %S \n", path);
-
 	sound.setBuffer(soundbuffer[cSoundType]);
 	//sound.setVolume(50);
 	sound.play();
-
-	//	while (sound.getStatus() == sf::Sound::Playing)
-	//	{
-			// Leave some CPU time for other processes
-			//sf::sleep(sf::milliseconds(1000));
-
-			// Display the playing position
-	//		std::cout << "\rPlaying... " << sound.getPlayingOffset().asSeconds() << " sec        ";
-	//		std::cout << std::flush;
-	//	}
 
 	return true;
 

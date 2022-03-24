@@ -42,6 +42,10 @@ public:
 
 	void switchTakeTurns();
 
+
+
+private:
+	void checkPossibleMoves(int, int);
 	//NUSRET
 	//
 	bool IsCheckState(Piece* Piece, std::vector<sf::Vector2i> posMoves, char playercolour);
@@ -50,9 +54,8 @@ public:
 	char GetChecktype();
 	void ControlAnyCheckPosition();
 	void CheckHeroPawnAndMakeQueen();
-
-private:
-	void checkPossibleMoves(int, int);
+	void ControlCastling(const int &_col, const int &_row);
+	void ControlEnPassant(const int& _col, const int& _row);
 
 	Array2D<Piece*> board = Array2D<Piece*>(COLS, ROWS);
 	Piece* selectedPiece;
@@ -75,6 +78,7 @@ private:
 	bool isPossibleBlockCheck = false;
 	char kingcurcol = 0;
 	char kingcurrow = 0;
+
 
 };
 
