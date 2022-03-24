@@ -29,7 +29,7 @@ public:
 	char getColour();
 	char getPiece();
 	int getMove();
-	//NUSRET
+
 	void setRow(int iRow);
 	void setCol(int iCol);
 	char getMovementtype();

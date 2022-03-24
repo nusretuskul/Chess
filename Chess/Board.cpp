@@ -122,7 +122,7 @@ void Board::mouseClicked(sf::Vector2i _position)
 
 	// NUSRET 
 	// 
-	// was not focusing when the current player clicked
+	// was not focusing when the current player clicked one time
 
 	if (possibleMoves.size() != 0 )
 		checkPossibleMoves(_col, _row);
@@ -193,10 +193,8 @@ void Board::mouseClicked(sf::Vector2i _position)
 
 void Board::checkPossibleMoves(int _col, int _row)
 {
-	//
-	//Nusret
+
 	sf::Vector2i _move;
-	//
 
 	for (auto _it = possibleMoves.begin(); _it != possibleMoves.end(); ++_it)
 	{

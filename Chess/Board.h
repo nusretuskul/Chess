@@ -46,8 +46,7 @@ public:
 
 private:
 	void checkPossibleMoves(int, int);
-	//NUSRET
-	//
+
 	bool IsCheckState(Piece* Piece, std::vector<sf::Vector2i> posMoves, char playercolour);
 	void GetPossibleBlockCheck();
 	void SavePotentiallyCheckPosition();
@@ -61,7 +60,6 @@ private:
 	Piece* selectedPiece;
 	std::vector<sf::Vector2i> possibleMoves;
 
-	//Nusret
 	Piece* killerPiece;
 	std::vector<sf::Vector2i> killerPossibleMoves;
 	std::vector<sf::Vector2i> PotentiallyCheckMoves;
@@ -72,7 +70,7 @@ private:
 	bool takeTurns;
 	CSound sound;
 
-	//NUSRET
+
 	char cSoundType = NULL;
 	bool isCheck = false;
 	bool isPossibleBlockCheck = false;

@@ -2,7 +2,6 @@
 #define PAWN_H
 
 #include "Piece.h"
-//#include "Queen.h"
 
 #define UP		-1
 #define DOWN	1
@@ -19,7 +18,6 @@ public:
 private:
 	int dir;
 
-	//Queen *m_Queen = new Queen(100, 3, 0, 'b');
 		
 };
 

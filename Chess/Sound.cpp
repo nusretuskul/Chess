@@ -1,11 +1,5 @@
 #include "Sound.h"
-
-
-///////////
-#include <windows.h>
 #include <iostream>
-#include <string>
-///////////
 
 
 CSound::CSound()
